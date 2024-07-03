@@ -105,3 +105,12 @@ const createUserName = function (accs) {
 };
 
 createUserName(accounts);
+
+const calcBalance = function (movements) {
+  const balance = movements.reduce(function (acc, curr) {
+    return acc + curr;
+  });
+  labelBalance.textContent = balance + '$';
+};
+
+calcBalance(account1.movements);
