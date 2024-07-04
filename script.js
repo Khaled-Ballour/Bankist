@@ -203,7 +203,27 @@ btnClose.addEventListener('click', function (e) {
     return;
   }
   accounts.splice(accountIndex, 1);
+  containerApp.style.opacity = 100;
   inputCloseUsername.value = inputClosePin.value = '';
   inputClosePin.blur();
   alert('the Account has been closed');
+});
+
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const loneAmmount = Math.abs(Number(inputLoanAmount.value));
+  const alloewdToLone = currentAccount.movements.some(
+    movement => movement > loneAmmount / 10
+  );
+  if (!alloewdToLone) {
+    inputLoanAmount.value = '';
+    inputLoanAmount.blur();
+    alert('Not allowed to lone this ammpunt yet');
+    return;
+  }
+  currentAccount.movements.push(loneAmmount);
+  updateDisplay();
+  inputLoanAmount.value = '';
+  inputLoanAmount.blur();
+  alert('Lone done successfully');
 });
