@@ -129,20 +129,59 @@ const calcDisplaySummary = function (acc) {
 createUserName(accounts);
 
 let currentAccount;
+
+const updateDisplay = function () {
+  labelWelcome.textContent = `Welcome back, ${
+    currentAccount.owner.split(' ')[0]
+  }`;
+  containerApp.style.opacity = 100;
+  inputLoginUsername.value = inputLoginPin.value = '';
+  inputLoginPin.blur();
+  displayMovements(currentAccount.movements);
+  calcBalance(currentAccount.movements);
+  calcDisplaySummary(currentAccount);
+};
+
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
   currentAccount = accounts.find(
     acc => acc.username === inputLoginUsername.value
   );
   if ((currentAccount.pin = Number(inputLoginPin.value))) {
-    labelWelcome.textContent = `Welcome back, ${
-      currentAccount.owner.split(' ')[0]
-    }`;
-    containerApp.style.opacity = 100;
-    inputLoginUsername.value = inputLoginPin.value = '';
-    inputLoginPin.blur();
-    displayMovements(currentAccount.movements);
-    calcBalance(currentAccount.movements);
-    calcDisplaySummary(currentAccount);
+    updateDisplay();
   }
+});
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const toUser = accounts.find(acc => acc.username === inputTransferTo.value);
+  const ammountToTransfare = Number(inputTransferAmount.value);
+  if (!toUser) {
+    inputTransferAmount.value = inputTransferTo.value = '';
+    inputTransferAmount.blur();
+    alert('No User has this name');
+    return;
+  }
+  if (toUser.username === currentAccount.username) {
+    inputTransferAmount.value = inputTransferTo.value = '';
+    inputTransferAmount.blur();
+
+    alert('You cant transfare to your own account');
+    return;
+  }
+  const balance = currentAccount.movements.reduce(function (acc, curr) {
+    return acc + curr;
+  });
+  if (ammountToTransfare > balance) {
+    inputTransferAmount.value = inputTransferTo.value = '';
+    inputTransferAmount.blur();
+    alert('You dont have enough money');
+    return;
+  }
+  currentAccount.movements.push(ammountToTransfare * -1);
+  toUser.movements.push(ammountToTransfare);
+  updateDisplay();
+  inputTransferAmount.value = inputTransferTo.value = '';
+  inputTransferAmount.blur();
+  alert('Transfare done successfully');
 });
