@@ -75,9 +75,9 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 
-const displayMovements = function (movements) {
+const displayMovements = function (acc) {
   containerMovements.innerHTML = '';
-  movements.forEach((movement, index) => {
+  acc.movements.forEach((movement, index) => {
     const type = movement > 0 ? 'deposit' : 'withdrawal';
     const html = `
       <div class="movements__row">
@@ -92,11 +92,11 @@ const displayMovements = function (movements) {
   });
 };
 
-const calcBalance = function (movements) {
-  const balance = movements.reduce(function (acc, curr) {
+const calcBalance = function (acc) {
+  acc.balance = acc.movements.reduce(function (acc, curr) {
     return acc + curr;
   });
-  labelBalance.textContent = balance + '€';
+  labelBalance.textContent = acc.balance + '€';
 };
 
 const createUserName = function (accs) {
@@ -137,8 +137,8 @@ const updateDisplay = function () {
   containerApp.style.opacity = 100;
   inputLoginUsername.value = inputLoginPin.value = '';
   inputLoginPin.blur();
-  displayMovements(currentAccount.movements);
-  calcBalance(currentAccount.movements);
+  displayMovements(currentAccount);
+  calcBalance(currentAccount);
   calcDisplaySummary(currentAccount);
 };
 
@@ -155,7 +155,7 @@ btnLogin.addEventListener('click', function (e) {
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const toUser = accounts.find(acc => acc.username === inputTransferTo.value);
-  const ammountToTransfare = Number(inputTransferAmount.value);
+  const ammountToTransfare = Math.abs(Number(inputTransferAmount.value));
   if (!toUser) {
     inputTransferAmount.value = inputTransferTo.value = '';
     inputTransferAmount.blur();
@@ -169,10 +169,7 @@ btnTransfer.addEventListener('click', function (e) {
     alert('You cant transfare to your own account');
     return;
   }
-  const balance = currentAccount.movements.reduce(function (acc, curr) {
-    return acc + curr;
-  });
-  if (ammountToTransfare > balance) {
+  if (ammountToTransfare > currentAccount.balance) {
     inputTransferAmount.value = inputTransferTo.value = '';
     inputTransferAmount.blur();
     alert('You dont have enough money');
