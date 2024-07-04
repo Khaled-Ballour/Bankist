@@ -227,3 +227,8 @@ btnLoan.addEventListener('click', function (e) {
   inputLoanAmount.blur();
   alert('Lone done successfully');
 });
+
+btnSort.addEventListener('click', function (e) {
+  currentAccount.movements.sort((a, b) => a - b);
+  updateDisplay();
+});
