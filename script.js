@@ -147,7 +147,7 @@ btnLogin.addEventListener('click', function (e) {
   currentAccount = accounts.find(
     acc => acc.username === inputLoginUsername.value
   );
-  if ((currentAccount.pin = Number(inputLoginPin.value))) {
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
     updateDisplay();
   }
 });
@@ -181,4 +181,23 @@ btnTransfer.addEventListener('click', function (e) {
   inputTransferAmount.value = inputTransferTo.value = '';
   inputTransferAmount.blur();
   alert('Transfare done successfully');
+});
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  const user = inputCloseUsername.value;
+  const pin = Number(inputClosePin.value);
+  const accountIndex = accounts.findIndex(
+    acc => acc.username === user && acc.pin === pin
+  );
+  if (accountIndex === -1) {
+    inputCloseUsername.value = inputClosePin.value = '';
+    inputClosePin.blur();
+    alert('Incorrect account');
+    return;
+  }
+  accounts.splice(accountIndex, 1);
+  inputCloseUsername.value = inputClosePin.value = '';
+  inputClosePin.blur();
+  alert('the Account has been closed');
 });
