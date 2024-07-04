@@ -196,6 +196,12 @@ btnClose.addEventListener('click', function (e) {
     alert('Incorrect account');
     return;
   }
+  if (accounts[accountIndex].username !== currentAccount.username) {
+    inputCloseUsername.value = inputClosePin.value = '';
+    inputClosePin.blur();
+    alert('You cant delete someone else account');
+    return;
+  }
   accounts.splice(accountIndex, 1);
   inputCloseUsername.value = inputClosePin.value = '';
   inputClosePin.blur();
