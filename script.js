@@ -128,7 +128,7 @@ const calcDisplaySummary = function (acc) {
 
 createUserName(accounts);
 
-let currentAccount;
+let currentAccount, timer;
 
 const updateDisplay = function () {
   labelWelcome.textContent = `Welcome back, ${
@@ -150,10 +150,12 @@ btnLogin.addEventListener('click', function (e) {
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
     updateDisplay();
   }
+  setTimer(10);
 });
 
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
+  setTimer(10);
   const toUser = accounts.find(acc => acc.username === inputTransferTo.value);
   const ammountToTransfare = Math.abs(Number(inputTransferAmount.value));
   if (!toUser) {
@@ -211,6 +213,7 @@ btnClose.addEventListener('click', function (e) {
 
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
+  setTimer(10);
   const loneAmmount = Math.abs(Number(inputLoanAmount.value));
   const alloewdToLone = currentAccount.movements.some(
     movement => movement > loneAmmount / 10
@@ -232,3 +235,22 @@ btnSort.addEventListener('click', function (e) {
   currentAccount.movements.sort((a, b) => a - b);
   updateDisplay();
 });
+
+const setTimer = function (min) {
+  if (timer) {
+    console.log('timer');
+    clearInterval(timer);
+  }
+  let time = min * 60;
+  // prettier-ignore
+  timer = setInterval(function () {
+    if (time >= 0) {
+      let timeText = `${String(Math.trunc(time / 60)).padStart(2, '0')}:${String(time % 60).padStart(2, '0')}`;
+      labelTimer.textContent = timeText;
+      time--;
+    } else {
+      clearInterval(timer);
+      containerApp.style.opacity = 0;
+    }
+  }, 1000);
+};
